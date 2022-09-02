@@ -2,6 +2,10 @@ defmodule SumList do
   # função reduzida
   def call(list), do: sum(list, 0)
 
+  # map  pega uma lista qualquer e utiliza uma função anonima passando um elemento para capiturarar essa lista
+  # toda função com ? no final como any? retorna um booleano, e tambem espera a condição que satisfaça minha condição
+  def call_enum(list), do: Enum.any?(list, fn elem -> elem > 5 end)
+
   # acc é o valor inicial da soma
   defp sum([], acc), do: acc
 
