@@ -1,4 +1,6 @@
 defmodule ReportsGenerator do
+  # palavra reduzida pega a ultima palavra para ser usada, não havendo a necessidade de reproduzir tudo
+  alias ReportsGenerator.Parser
   # usando a função case para tratar caso de erro e sucesso
   # caso queira um parametro default é so colocar um " _ -> "caso qualquer"
   # def build(filename) do
@@ -17,19 +19,14 @@ defmodule ReportsGenerator do
   # essa função tem uma peculiaridade, em caso de sucesso ira abrir o arquivo e em caso de erro,
   # apenas não abre o arquivo
   def build(filename) do
-    "reports/#{filename}"
-    |> File.stream!()
-    |> Enum.map(fn line -> parse_line(line) end)
+    filename
+    |> Parser.parse_file()
+    |> Enum.reduce(report_acc(), fn line, report -> sum_values(line, report) end)
   end
 
-  defp parse_line(line) do
-    line
-    # Retira possível \n no arquivo
-    |> String.trim()
-    # Separa os argumentos com você desejar ", - ; ..."
-    |> String.split(",")
-    # Transforma uma posição do parametro em inteiro
-    # & antes de uma finção é a maneira reduzina de fanzer uma função anonima
-    |> List.update_at(2, &String.to_integer/1)
-  end
+  defp sum_values([id, _food_name, price], report), do: Map.put(report, id, report[id] + price)
+
+  # Para que o map não venha vazio, iremos usar o Enum.into/3 inicializando diretamente com "1" => 30 ...
+  # Assim facilitando a somatoria dos preços referente ao produto por usuario
+  defp report_acc, do: Enum.into(1..30, %{}, &{Integer.to_string(&1), 0})
 end
