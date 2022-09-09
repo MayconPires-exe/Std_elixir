@@ -24,6 +24,9 @@ defmodule ReportsGenerator do
     |> Enum.reduce(report_acc(), fn line, report -> sum_values(line, report) end)
   end
 
+  # retorna o parametro com maior valor
+  def fetch_higher_cost(report), do: Enum.max_by(report, fn {_key, value} -> value end)
+
   defp sum_values([id, _food_name, price], report), do: Map.put(report, id, report[id] + price)
 
   # Para que o map não venha vazio, iremos usar o Enum.into/3 inicializando diretamente com "1" => 30 ...
